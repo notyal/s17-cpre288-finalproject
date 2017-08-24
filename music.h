@@ -1,9 +1,18 @@
-#define RICK_ROLL			0
-#define IMERPIAL_MARCH 		1
-#define MARIO_UNDERWORLD	3
-#define MARIO_UNDERWATER	7
+/**
+ *		@file music.h
+ *		@brief this header file will contain all the required
+ *		definitions and basic music load functions
+ *
+ *		@author Team Drop Tables
+ *
+ *		@date April 26, 2017
+ */
 
+/**
+ * Song indexing constants
+ */
+#define MELEE_THEME				0
+#define GAMECUBE_THEME			2
 
-#warning "Make sure the open interface has been initialized before calling load_songs()." // you may delete this warning
 /// Loads some songs over the open interface
 void load_songs();

@@ -1,4 +1,12 @@
-#include "main.h"
+/**
+ *		@file main.c
+ *		@brief this controls the main code for the iRobot control
+ *
+ *		@author Team Drop Tables
+ *
+ *		@data 4/26/2017
+ */
+
 #include "timer.h"
 #include "lcd.h"
 #include "button.h"
@@ -10,28 +18,29 @@
 #include "scan.h"
 #include "open_interface.h"
 #include "movement.h"
-#include "sensor.h"
+#include "music.h"
 #include <stdbool.h>
 #include "driverlib/interrupt.h"
-//#include <unistd.h>
 
-uint8_t idegrees = 0;
-unsigned imove_servo(int deg){
-	idegrees = deg;
-	return move_servo(deg);
-}
-
-
-
-  int main(void) {
+/// The main() controls communcation with the provided C# program interface for bot control.
+/**
+ *		The main() controls communcation with the provided C# program interface for bot control. The command lists are as follows:
+ *
+ *		S: Scan
+ *		m: Move forward 50mm
+ *		M: Move forward 300mm
+ *		l: Rotate left 10 degrees
+ *		L: Rotate left 90 degrees
+ *		r: Rotate right 10 degrees
+ *		R: Rotate right 90 degrees
+ *		D: Send sensor data (Bumper, Cliff, Line, Light Bumper)
+ *		X: Play Song 1 (Melee Theme)
+ *		Y: Play Song 2 (Gamecube Boot Theme)
+ *		V: Victory Dance
+ */
+int main(void) {
 	oi_t *sensor_data = oi_alloc();
 	oi_init(sensor_data);
-//	lcd_init();
-//
-//	while(1){
-//		lcd_printf("%d\n%d\n%d\n%d", sensor_data->cliffLeft,sensor_data->cliffFrontLeft,sensor_data->cliffFrontRight,sensor_data->cliffRight);
-//		oi_update(sensor_data);
-//	}
 
 	lcd_init();
 	button_init();
@@ -42,70 +51,91 @@ unsigned imove_servo(int deg){
 	ping_init();
 	set_sensor_data();
 
-	// wait for button 6 to start
-	lcd_clear();
-	lcd_printf("\nPress Button 6\nTo Start\n");
-	while (button_getButton() != 6);
-	lcd_clear();
+
+	load_songs();
+
+
+	oi_play_song(GAMECUBE_THEME);
 
 	char rx;
 
 	for(;;){
-		lcd_printf("waiting...");
+		lcd_printf("waiting...\n");
 		rx = uart_receive();
 
 		char buf[80];
 
 		switch(rx){
 			case 'S' :
+				lcd_printf("Scanning...\n");
 				scan_action();
+				sprintf(buf, " Scan Complete\n");
+				uart_puts(buf);
+				break;
+			case 'm' :
+				move_forward(50,0);
+				lcd_printf("Moving forward...\n");
+				sprintf(buf, "M 50 Moved forward 50mm\n");
+				uart_puts(buf);
 				break;
 			case 'M':
-				move_forward(20,0);
-
-				sprintf(buf, "M Moved forward 20cm");
+				move_forward(300,0);
+				lcd_printf("Moving forward...\n");
+				sprintf(buf, "M 300 Moved forward 300mm\n");
+				uart_puts(buf);
+				break;
+			case 'l':
+				rotate_cclock(10);
+				lcd_printf("Rotating Left...\n");
+				sprintf(buf, "L 10 Rotated counter-clockwise 10 degrees\n");
+				uart_puts(buf);
+				break;
+			case 'r':
+				rotate_clock(10);
+				lcd_printf("Rotating Right...\n");
+				sprintf(buf, "R 10 Rotated clockwise 10 degrees\n");
 				uart_puts(buf);
 				break;
 			case 'L':
-				rotate_cclock(10);
-
-				sprintf(buf, "L Rotated counter-clockwise 5 degrees");
+				rotate_cclock(90);
+				lcd_printf("Rotating Left...\n");
+				sprintf(buf, "L 90 Rotated counter-clockwise 90 degrees\n");
 				uart_puts(buf);
 				break;
 			case 'R':
-				rotate_clock(10);
-
-				sprintf(buf, "R Rotated clockwise 5 degrees");
+				rotate_clock(90);
+				lcd_printf("Rotating Right...\n");
+				sprintf(buf, "R 90 Rotated clockwise 90 degrees\n");
 				uart_puts(buf);
 				break;
+			case 'D':
+				lcd_printf("Sending Sensor Data...\n");
+				print_sensor_data();
+				break;
+			case 'X':
+				oi_play_song(MELEE_THEME);
+				lcd_printf("Fox only, \nfinal destination\n");
+				sprintf(buf, "Playing song\n");
+				uart_puts(buf);
+				break;
+			case 'Y':
+				oi_play_song(GAMECUBE_THEME);
+				lcd_printf("Loading OS...\n");
+				sprintf(buf, "Playing song\n");
+				uart_puts(buf);
+				break;
+			case 'V':
+				oi_play_song(MELEE_THEME);
+				fast_rotate_clock(360);
+				fast_rotate_cclock(360);
+				move_forward(50,0);
+				move_backward(100);
+				move_forward(50,0);
+				fast_rotate_clock(360);
+				fast_rotate_cclock(360);
 		}
 
 		timer_waitMillis(500);
 	}
 
 }
-
-
-
-//	for(;;){
-////		uart_sendChar(command[0]);
-//		int override = 0;
-//		uint8_t dist = 0;
-//
-//		switch(uart_receive()){
-//			case 'S' :
-//				scan_action();
-//				break;
-//			case 'M':
-//				override = atoi((const char)uart_receive());
-//				char r;
-//				char rdata[255];
-//				uint8_t i = 0;
-//				for(i = 0, r = uart_receive(); r != '\n'; i++) {
-//					rdata[0] = r;
-//				}
-//				rdata[i] = '\0';
-//				dist = atoi(rdata);
-//				break;
-//		}
-//	}

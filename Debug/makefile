@@ -15,10 +15,10 @@ ORDERED_OBJS += \
 "./lcd.obj" \
 "./main.obj" \
 "./movement.obj" \
+"./music.obj" \
 "./open_interface.obj" \
 "./ping.obj" \
 "./scan.obj" \
-"./sensor.obj" \
 "./serial_wifi.obj" \
 "./servo.obj" \
 "./timer.obj" \
@@ -165,8 +165,8 @@ FinalProject_DropTables.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)$(BIN_OUTPUTS__QUOTED)
-	-$(RM) "button.d" "ir.d" "lcd.d" "main.d" "movement.d" "open_interface.d" "ping.d" "scan.d" "sensor.d" "serial_wifi.d" "servo.d" "timer.d" "tm4c123gh6pm_startup_ccs.d" 
-	-$(RM) "button.obj" "ir.obj" "lcd.obj" "main.obj" "movement.obj" "open_interface.obj" "ping.obj" "scan.obj" "sensor.obj" "serial_wifi.obj" "servo.obj" "timer.obj" "tm4c123gh6pm_startup_ccs.obj" 
+	-$(RM) "button.d" "ir.d" "lcd.d" "main.d" "movement.d" "music.d" "open_interface.d" "ping.d" "scan.d" "serial_wifi.d" "servo.d" "timer.d" "tm4c123gh6pm_startup_ccs.d" 
+	-$(RM) "button.obj" "ir.obj" "lcd.obj" "main.obj" "movement.obj" "music.obj" "open_interface.obj" "ping.obj" "scan.obj" "serial_wifi.obj" "servo.obj" "timer.obj" "tm4c123gh6pm_startup_ccs.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

@@ -1,9 +1,9 @@
-#include "main.h"
 #include "timer.h"
 #include "lcd.h"
 #include "button.h"
 #include "serial_wifi.h"
 #include "math.h"
+#include "ping.h"
 #include "driverlib/interrupt.h"
 
 volatile enum {LOW, HIGH, DONE} state;

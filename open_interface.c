@@ -320,7 +320,6 @@ void oi_setWheels(int16_t right_wheel, int16_t left_wheel)
 	oi_uartSendChar(left_wheel& 0xff);
 }
 
-
 /// \brief Load song sequence
 /// \param An integer value from 0 - 15 that acts as a label for note sequence
 /// \param An integer value from 1 - 16 indicating the number of notes in the sequence
@@ -412,7 +411,7 @@ char oi_uartReceive(void)
 	//uint32_t tempData; //used for error checking
 	char data;
 
-	while((UART4_FR_R & UART_FR_RXFE)); //wait here until data is recieved
+ 	while((UART4_FR_R & UART_FR_RXFE)); //wait here until data is recieved
 
 	data = (char)(UART4_DR_R & 0xFF);
 
@@ -548,6 +547,5 @@ int getDegrees(oi_t *self){
 	deg = (deg*180)/M_PI;
 
 	return (deg);
-
 }
 

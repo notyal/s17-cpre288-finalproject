@@ -1,5 +1,13 @@
-#include "scan.h"
+/**
+ *		@file scan.c
+ *		@brief This defines all functionality related to scanning with the SONAR and IR sensor
+ *
+ *		@author Team Drop Tables
+ *
+ *		@date April 26, 2017
+ */
 
+#include "scan.h"
 #include "math.h"
 #include "ir.h"
 #include "ping.h"
@@ -8,7 +16,6 @@
 #include "button.h"
 #include "serial_wifi.h"
 #include <stdbool.h>
-
 
 int16_t scan_degrees = 0;
 int8_t obj_count = 0;
@@ -26,7 +33,14 @@ float smallest_obj_width = 100;
 int8_t edge_count = 0;
 _Bool end_case = false;
 
-
+/// Resets all the global variables.
+/**
+ * 		Resets all the global variables for a new scan. This allows for each scan to produce fresh results
+ *	 	that are not affected by previous scans.
+ *
+ *		@author Team Drop Tables
+ *		@date 4/26/2017
+ */
 void scan_reset(){
 	scan_degrees = 0;
 	obj_detection = false;
@@ -48,6 +62,16 @@ void scan_reset(){
 	timer_waitMillis(250);
 }
 
+/// Scans from 0 degrees to 180 degrees and returns over UART objects detected and their approximate location.
+/**
+ * 		Scans from 0 degrees to 180 degrees and returns over UART objects detected and their approximate location.
+ * 		Sends back data in following format, space delimited:
+ *				['S'][deg_start][deg_end][distance]
+ *
+ *
+ *		@author Team Drop Tables
+ *		@date 4/26/2017
+ */
 void scan_action(){
 	scan_reset();
 
@@ -72,6 +96,10 @@ void scan_action(){
 			deg_end = 0;
 			obj_count++;
 			distance_avg = 0;
+
+			sprintf(buffer, "Object Spotted\r\n");
+			uart_puts(buffer);
+
 		}
 
 		// calls when an object is lost in sight
@@ -90,9 +118,8 @@ void scan_action(){
 			// Transmit data over UART
 			int dist_send = (int) distance_avg;
 
-			char buf[80];
-			sprintf(buf, "S %d %d %d\r\n", deg_start, deg_end,dist_send);
-			uart_puts(buf);
+			sprintf(buffer, "S %d %d %d\r\n", deg_start, deg_end,dist_send);
+			uart_puts(buffer);
 
 			// Reset error protection
 			distance_count = distance_total = 0;
@@ -108,7 +135,7 @@ void scan_action(){
 		}
 
 		// Increments servo by a degree
-		scan_degrees = scan_degrees + 1;
+		scan_degrees = scan_degrees + 2;
 		move_servo(scan_degrees);
 		timer_waitMillis(100);
 	}

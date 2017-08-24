@@ -1,4 +1,6 @@
-
+doxygen/
+dvt/
+RemoteSystemsTempFiles/
 # Created by https://www.gitignore.io/api/c,eclipse,windows
 
 ### C ###

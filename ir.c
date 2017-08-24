@@ -8,7 +8,7 @@
 #include "ir.h"
 #include "math.h"
 
-volatile isr_int_value;
+volatile int isr_int_value;
 
 void ir_init()
 {
